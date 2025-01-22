@@ -89,4 +89,4 @@ Ce projet est sous licence [MIT License](LICENSE).
 
 ---
 
-Créé par [Votre Nom/Équipe].
+Créé par [CirrusLab/AltiUP].
