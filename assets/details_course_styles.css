@@ -1,0 +1,128 @@
+/* Table Styles */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Réduire la largeur de la colonne de gauche (titre des champs) */
+table th {
+    width: 30%; /* Réduire la largeur de la colonne gauche à 30% */
+    background-color: #007BFF;
+    color: white;
+    text-transform: uppercase;
+    font-weight: bold;
+    padding: 15px;
+    text-align: left;
+}
+
+/* La colonne de droite (valeurs des champs) prendra 70% de la largeur */
+table td {
+    width: 70%; /* Réduit la largeur de la colonne de droite */
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    font-size: 1rem;
+    color: #333;
+}
+
+/* Table row styling */
+table tr:nth-child(even) td {
+    background-color: #f1f1f1;
+}
+
+table tr:hover td {
+    background-color: #ecf0f1;
+    transition: background-color 0.3s ease;
+}
+
+/* Styling for the buttons */
+button {
+    padding: 8px 16px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+    background-color: #2980b9;
+    transform: scale(1.05);
+}
+
+button:active {
+    background-color: #1c5980;
+    transform: scale(1);
+}
+
+/* Improved styling for the photo gallery */
+.photo-gallery {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+}
+
+.photo-gallery div {
+    position: relative;
+}
+
+.course-photo {
+    max-width: 300px;
+    max-height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+    transition: transform 0.3s ease;
+}
+
+.course-photo:hover {
+    transform: scale(1.05);
+}
+
+/* Delete photo button */
+.delete-photo {
+    position: absolute;
+    top: -15px;
+    right: 5px;
+    background-color: #e74c3c;
+    color: white;
+    padding: 5px 10px;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 5px;
+    text-decoration: none;
+    display: inline-block;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.delete-photo:hover {
+    background-color: #c0392b;
+    transform: scale(1.1);
+}
+
+.delete-photo:active {
+    background-color: #e74c3c;
+    transform: scale(1);
+}
+
+.photo-gallery div:hover .delete-photo {
+    visibility: visible;
+}
+
+a {
+    margin-top: 20px;
+    display: inline-block;
+    color: #007BFF;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+a:hover {
+    text-decoration: underline;
+}
