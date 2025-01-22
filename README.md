@@ -1,5 +1,5 @@
 
-# Mountain Log - Gestion des Courses en Montagne
+# Mountain Log - Gestion des courses en montagne
 
 ## Description
 
