@@ -28,50 +28,74 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $participants = $_POST['participants'];
     $itineraire = $_POST['itineraire'];
     $type_activite = $_POST['type_activite'];
+    if ($type_activite === "Autre" && !empty($_POST['autre_activite'])) {
+      $type_activite = trim($_POST['autre_activite']);
+    }
     $difficulte = $_POST['difficulte'];
     $date = $_POST['date'];
     $conditions = $_POST['conditions'];
     $remarques = $_POST['remarques'];
     $position_cordee = $_POST['position_cordee'];
 
-    // Gestion des nouvelles photos
-    $new_photos = [];
-    $upload_dir = 'uploads/' . preg_replace('/[^a-zA-Z0-9]/', '_', $sommet) . '_' . preg_replace('/[^a-zA-Z0-9]/', '_', $itineraire) . '_' . $date;
-    if (!is_dir($upload_dir)) {
-        mkdir($upload_dir, 0777, true);
-    }
-    $existing_photos = glob($upload_dir . '/photo_*.{jpg,jpeg,png,gif}', GLOB_BRACE);
-    $increment = count($existing_photos) + 1;
+// Construire l'ancien et le nouveau répertoire des photos
+$old_dir = 'uploads/' . preg_replace('/[^a-zA-Z0-9]/', '_', $course['sommet']) . '_' . preg_replace('/[^a-zA-Z0-9]/', '_', $course['itineraire']) . '_' . $course['date'];
+$new_dir = 'uploads/' . preg_replace('/[^a-zA-Z0-9]/', '_', $sommet) . '_' . preg_replace('/[^a-zA-Z0-9]/', '_', $itineraire) . '_' . $date;
 
-    if (isset($_FILES['new_photos']) && count($_FILES['new_photos']['name']) > 0) {
-        foreach ($_FILES['new_photos']['name'] as $key => $name) {
-            if ($_FILES['new_photos']['error'][$key] === 0) {
-                $tmp_name = $_FILES['new_photos']['tmp_name'][$key];
-                $extension = pathinfo($name, PATHINFO_EXTENSION);
-                do {
-                    $photo_name = sprintf("photo_%03d.%s", $increment, $extension);
-                    $destination = $upload_dir . '/' . $photo_name;
-                    $increment++;
-                } while (file_exists($destination));
+// Vérifier si le répertoire doit être renommé
+if ($old_dir !== $new_dir && is_dir($old_dir)) {
+    rename($old_dir, $new_dir);
+}
 
-                if (move_uploaded_file($tmp_name, $destination)) {
-                    $new_photos[] = $destination;
-                }
+// Mise à jour des photos (gestion du changement de dossier)
+$photos_updated = $course['photos'] ? str_replace($old_dir, $new_dir, $course['photos']) : "";
+
+// Vérifier si le dossier existe, sinon le créer
+if (!is_dir($new_dir)) {
+    mkdir($new_dir, 0777, true);
+}
+
+// Gestion des nouvelles photos
+$new_photos = [];
+$existing_photos = glob($new_dir . '/photo_*.{jpg,jpeg,png,gif}', GLOB_BRACE);
+$increment = count($existing_photos) + 1;
+
+if (isset($_FILES['new_photos']) && count($_FILES['new_photos']['name']) > 0) {
+    foreach ($_FILES['new_photos']['name'] as $key => $name) {
+        if ($_FILES['new_photos']['error'][$key] === 0) {
+            $tmp_name = $_FILES['new_photos']['tmp_name'][$key];
+            $extension = pathinfo($name, PATHINFO_EXTENSION);
+            do {
+                $photo_name = sprintf("photo_%03d.%s", $increment, $extension);
+                $destination = $new_dir . '/' . $photo_name;
+                $increment++;
+            } while (file_exists($destination));
+
+            if (move_uploaded_file($tmp_name, $destination)) {
+                $new_photos[] = $destination;
             }
         }
     }
+}
 
-    // Fusion des anciennes et nouvelles photos
-    $all_photos = $course['photos'] ? array_merge(explode(",", $course['photos']), $new_photos) : $new_photos;
-    $photos_str = implode(",", $all_photos);
+// Fusion des anciennes et nouvelles photos
+$all_photos = $photos_updated ? explode(",", $photos_updated) : [];
+$all_photos = array_merge($all_photos, $new_photos);
+$photos_str = implode(",", $all_photos);
 
-    $update_sql = "UPDATE courses SET sommet = '$sommet', altitude = $altitude, denivele = $denivele, duree = '$duree', participants = '$participants', itineraire = '$itineraire', type_activite = '$type_activite', difficulte = '$difficulte', date = '$date', conditions = '$conditions', remarques = '$remarques', position_cordee = '$position_cordee', photos = '$photos_str' WHERE id = $id";
+// Mise à jour de la base de données
+$update_sql = "UPDATE courses
+               SET sommet = '$sommet', altitude = $altitude, denivele = $denivele, duree = '$duree',
+                   participants = '$participants', itineraire = '$itineraire', type_activite = '$type_activite',
+                   difficulte = '$difficulte', date = '$date', conditions = '$conditions', remarques = '$remarques',
+                   position_cordee = '$position_cordee', photos = '$photos_str'
+               WHERE id = $id";
 
-    if ($conn->query($update_sql) === TRUE) {
-        echo "<div class='message success'>Course modifiée avec succès ! <button class='close' onclick='this.parentElement.style.display=\"none\";'>&times;</button></div>";
-    } else {
-        echo "<div class='message error'>Erreur lors de la modification : " . htmlspecialchars($conn->error) . " <button class='close' onclick='this.parentElement.style.display=\"none\";'>&times;</button></div>";
-    }
+if ($conn->query($update_sql) === TRUE) {
+    header("Location: index.php?message=success");
+    exit();
+} else {
+    echo "<div class='message error'>Erreur lors de la modification : " . htmlspecialchars($conn->error) . " <button class='close' onclick='this.parentElement.style.display=\"none\";'>&times;</button></div>";
+}
 }
 ?>
 
@@ -108,14 +132,20 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             <textarea id="itineraire" name="itineraire"><?= htmlspecialchars($course['itineraire']) ?></textarea>
 
             <label for="type_activite">Type d'activité :</label>
-            <select id="type_activite" name="type_activite" required>
-                <option value="Alpinisme" <?= $course['type_activite'] === 'Alpinisme' ? 'selected' : '' ?>>Alpinisme</option>
-                <option value="Ski de randonnée" <?= $course['type_activite'] === 'Ski de randonnée' ? 'selected' : '' ?>>Ski de randonnée</option>
-                <option value="Randonnée" <?= $course['type_activite'] === 'Randonnée' ? 'selected' : '' ?>>Randonnée</option>
-                <option value="Escalade" <?= $course['type_activite'] === 'Escalade' ? 'selected' : '' ?>>Escalade</option>
-                <option value="Cascade de glace" <?= $course['type_activite'] === 'Cascade de glace' ? 'selected' : '' ?>>Cascade de glace</option>
-                <option value="Autre" <?= $course['type_activite'] === 'Autre' ? 'selected' : '' ?>>Autre</option>
-            </select>
+<select id="type_activite" name="type_activite" required>
+    <option value="Alpinisme" <?= $course['type_activite'] === 'Alpinisme' ? 'selected' : '' ?>>Alpinisme</option>
+    <option value="Ski de randonnée" <?= $course['type_activite'] === 'Ski de randonnée' ? 'selected' : '' ?>>Ski de randonnée</option>
+    <option value="Randonnée" <?= $course['type_activite'] === 'Randonnée' ? 'selected' : '' ?>>Randonnée</option>
+    <option value="Escalade" <?= $course['type_activite'] === 'Escalade' ? 'selected' : '' ?>>Escalade</option>
+    <option value="Cascade de glace" <?= $course['type_activite'] === 'Cascade de glace' ? 'selected' : '' ?>>Cascade de glace</option>
+    <option value="Autre" <?= !in_array($course['type_activite'], ['Alpinisme', 'Ski de randonnée', 'Randonnée', 'Escalade', 'Cascade de glace']) ? 'selected' : '' ?>>Autre</option>
+</select>
+
+<!-- Champ texte caché pour l'activité personnalisée -->
+<div id="autre_activite_div" style="display: <?= !in_array($course['type_activite'], ['Alpinisme', 'Ski de randonnée', 'Randonnée', 'Escalade', 'Cascade de glace']) ? 'block' : 'none' ?>;">
+    <label for="autre_activite">Précisez l'activité :</label>
+    <input type="text" id="autre_activite" name="autre_activite" value="<?= htmlspecialchars(!in_array($course['type_activite'], ['Alpinisme', 'Ski de randonnée', 'Randonnée', 'Escalade', 'Cascade de glace']) ? $course['type_activite'] : '') ?>">
+</div>
 
             <label for="difficulte">Difficulté :</label>
             <input type="text" id="difficulte" name="difficulte" value="<?= htmlspecialchars($course['difficulte']) ?>">
@@ -143,5 +173,25 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         </form>
         <a href="index.php">Retour à l'accueil</a>
     </div>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    let selectActivite = document.getElementById("type_activite");
+    let autreActiviteDiv = document.getElementById("autre_activite_div");
+    let autreActiviteInput = document.getElementById("autre_activite");
+
+    function toggleAutreActivite() {
+        if (selectActivite.value === "Autre") {
+            autreActiviteDiv.style.display = "block";
+            autreActiviteInput.setAttribute("required", "required");
+        } else {
+            autreActiviteDiv.style.display = "none";
+            autreActiviteInput.removeAttribute("required");
+            autreActiviteInput.value = "";
+        }
+    }
+
+    selectActivite.addEventListener("change", toggleAutreActivite);
+});
+</script>
 </body>
 </html>
