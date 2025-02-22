@@ -2,6 +2,12 @@
 // Inclusion du fichier de configuration
 include 'config.php';
 
+// Vérification de la présence du message de succès
+$message = "";
+if (isset($_GET['message']) && $_GET['message'] === 'success') {
+    $message = "<div class='message success'>Course modifiée avec succès ! <button class='close' onclick='this.parentElement.style.display=\"none\";'>&times;</button></div>";
+}
+
 // Suppression d'une course si l'action est demandée
 if (isset($_GET['delete_id'])) {
     $delete_id = intval($_GET['delete_id']); // S'assurer que l'ID est un entier
@@ -66,7 +72,7 @@ $result = $stmt->get_result();
 <body>
     <div class="container">
         <h1>Liste des Courses</h1>
-
+        <?= $message ?>
         <!-- Formulaire de recherche -->
         <form method="GET" action="" class="search-form">
             <input type="text" name="search" value="<?= htmlspecialchars($search) ?>" placeholder="Rechercher un sommet ou un itinéraire">

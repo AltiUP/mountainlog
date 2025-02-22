@@ -6,7 +6,7 @@ CREATE TABLE courses (
     duree TIME NOT NULL,
     participants TEXT,
     itineraire TEXT,
-    type_activite ENUM('Alpinisme', 'Ski de randonnée', 'Randonnée', 'Escalade', 'Cascade de glace', 'Autre') NOT NULL,
+    type_activite VARCHAR(255) NOT NULL,
     difficulte VARCHAR(100) NOT NULL,
     date DATE NOT NULL,
     conditions TEXT,

@@ -60,6 +60,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $participants = $_POST['participants'];
     $itineraire = $_POST['itineraire'];
     $type_activite = $_POST['type_activite'];
+    if ($type_activite === "Autre" && !empty($_POST['autre_activite'])) {
+        $type_activite = $_POST['autre_activite'];
+    }
     $difficulte = $_POST['difficulte'];
     $date = $_POST['date'];
     $conditions = $_POST['conditions'];
@@ -148,6 +151,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 <option value="Autre">Autre</option>
             </select>
 
+            <!-- Champ texte caché pour "Autre" -->
+            <div id="autre_activite_div" style="display: none;">
+                <label for="autre_activite">Précisez l'activité :</label>
+                <input type="text" id="autre_activite" name="autre_activite">
+            </div>
+
             <label for="difficulte">Difficulté :</label>
             <input type="text" id="difficulte" name="difficulte">
 
@@ -174,5 +183,22 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         </form>
         <a href="index.php">Retour à l'accueil</a>
     </div>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    let selectActivite = document.getElementById("type_activite");
+    let autreActiviteDiv = document.getElementById("autre_activite_div");
+    let autreActiviteInput = document.getElementById("autre_activite");
+
+    selectActivite.addEventListener("change", function () {
+        if (this.value === "Autre") {
+            autreActiviteDiv.style.display = "block";
+            autreActiviteInput.setAttribute("required", "required");
+        } else {
+            autreActiviteDiv.style.display = "none";
+            autreActiviteInput.removeAttribute("required");
+        }
+    });
+});
+</script>
 </body>
 </html>
