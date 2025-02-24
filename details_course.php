@@ -39,7 +39,7 @@ if (isset($_GET['delete_photo'])) {
     $conn->query($update_sql);
 
     // Redirection pour éviter le repostage du formulaire
-    header("Location: details_course.php?id=" . $id);
+    header("Location: details_course?id=" . $id);
     exit();
 }
 ?>
@@ -49,7 +49,7 @@ if (isset($_GET['delete_photo'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Détails de la Course</title>
+    <title>MountainLog | Détails de la Course</title>
     <link rel="stylesheet" href="assets/styles.css">
     <link rel="stylesheet" href="assets/details_course_styles.css">
 </head>
@@ -119,7 +119,7 @@ if (isset($_GET['delete_photo'])) {
                 $photo_name = basename($photo);
                 echo '<div>';
                 echo '<img src="' . $photo . '" alt="Photo de la course" class="course-photo">';
-                echo '<a href="details_course.php?id=' . $id . '&delete_photo=' . urlencode($photo_name) . '" class="delete-photo" onclick="return confirm(\'Êtes-vous sûr de vouloir supprimer cette photo ?\')">Supprimer</a>';
+                echo '<a href="details_course?id=' . $id . '&delete_photo=' . urlencode($photo_name) . '" class="delete-photo" onclick="return confirm(\'Êtes-vous sûr de vouloir supprimer cette photo ?\')">Supprimer</a>';
                 echo '</div>';
             }
             echo '</div>';
@@ -128,7 +128,7 @@ if (isset($_GET['delete_photo'])) {
         }
         ?>
 
-        <a href="index.php">Retour à l'accueil</a>
+        <a href="/mountainlog">Retour à l'accueil</a>
     </div>
 </body>
 </html>

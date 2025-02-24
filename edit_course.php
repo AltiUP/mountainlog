@@ -91,7 +91,7 @@ $update_sql = "UPDATE courses
                WHERE id = $id";
 
 if ($conn->query($update_sql) === TRUE) {
-    header("Location: index.php?message=success");
+    header("Location: /mountainlog?message=success");
     exit();
 } else {
     echo "<div class='message error'>Erreur lors de la modification : " . htmlspecialchars($conn->error) . " <button class='close' onclick='this.parentElement.style.display=\"none\";'>&times;</button></div>";
@@ -104,7 +104,7 @@ if ($conn->query($update_sql) === TRUE) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modifier une Course</title>
+    <title>MountainLog | Modifier une Course</title>
     <link rel="stylesheet" href="assets/styles.css">
     <link rel="stylesheet" href="assets/edit_course_styles.css">
     <link rel="stylesheet" href="assets/messages_styles.css">
@@ -172,7 +172,7 @@ if ($conn->query($update_sql) === TRUE) {
 
             <button type="submit">Enregistrer les modifications</button>
         </form>
-        <a href="index.php">Retour à l'accueil</a>
+        <a href="/mountainlog">Retour à l'accueil</a>
     </div>
 <script>
 document.getElementById('new_photos').addEventListener('change', function() {

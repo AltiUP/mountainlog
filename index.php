@@ -87,7 +87,7 @@ $result = $stmt->get_result();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mes Courses</title>
+    <title>MountainLog | Mes Courses</title>
     <link rel="stylesheet" href="assets/styles.css">
     <link rel="stylesheet" href="assets/messages_styles.css">
 </head>
@@ -108,7 +108,7 @@ $result = $stmt->get_result();
                 <input type="text" name="search" value="<?= htmlspecialchars($search ?? '') ?>" placeholder="Rechercher un sommet ou un itinéraire" aria-label="Rechercher une course">
                 <button type="submit" title="Rechercher">Rechercher</button>
             </form>
-            <a href="ajouter_course.php" class="btn-add" title="Ajouter une nouvelle course">+ Ajouter</a>
+            <a href="add_course" class="btn-add" title="Ajouter une nouvelle course">+ Ajouter</a>
         </div>
 
         <div class="table-wrapper">
@@ -137,8 +137,8 @@ $result = $stmt->get_result();
                                 <td data-label="Type d'activité"><?= htmlspecialchars($row['type_activite']) ?></td>
                                 <td data-label="Date"><?= htmlspecialchars($row['date']) ?></td>
                                 <td data-label="Actions">
-                                    <a href="details_course.php?id=<?= $row['id'] ?>" class="btn-details" title="Voir les détails">🔍 Détails</a>
-                                    <a href="edit_course.php?id=<?= $row['id'] ?>" class="btn-edit" title="Modifier la course">✏️ Modifier</a>
+                                    <a href="details_course?id=<?= $row['id'] ?>" class="btn-details" title="Voir les détails">🔍 Détails</a>
+                                    <a href="edit_course?id=<?= $row['id'] ?>" class="btn-edit" title="Modifier la course">✏️ Modifier</a>
                                     <a href="?delete_id=<?= $row['id'] ?>" class="btn-delete" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette course ?')" title="Supprimer la course">🗑️ Supprimer</a>
                                 </td>
                             </tr>
