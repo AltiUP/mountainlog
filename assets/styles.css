@@ -1,10 +1,16 @@
+/* Style global */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
     background-color: #f9f9f9;
+    font-size: clamp(14px, 1.2vw, 18px);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden; /* Évite les débordements */
 }
 
+/* Conteneur principal */
 .container {
     max-width: 1200px;
     margin: 20px auto;
@@ -12,30 +18,50 @@ body {
     background-color: #fff;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
+    box-sizing: border-box;
+    overflow-x: hidden;
 }
 
+/* Titre principal */
 h1 {
     text-align: center;
     margin-bottom: 20px;
     color: #333;
 }
 
-/* Style pour le champ de recherche */
+/* 📌 Barre de recherche et bouton Ajouter */
+.search-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+    width: 100%;
+    padding: 0 10px;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+/* Formulaire de recherche */
 .search-form {
     display: flex;
-    justify-content: center;
-    margin-bottom: 20px;
+    flex-grow: 1;
+    max-width: 70%;
+    gap: 5px;
+    min-width: 0;
 }
 
 .search-form input[type="text"] {
-    width: 60%;
-    padding: 10px;
+    flex-grow: 1;
+    padding: 12px;
     font-size: 16px;
     border: 1px solid #ddd;
-    border-radius: 5px 0 0 5px;
+    border-radius: 5px;
     box-sizing: border-box;
     outline: none;
     transition: border-color 0.3s ease;
+    min-width: 100px;
 }
 
 .search-form input[type="text"]:focus {
@@ -44,18 +70,45 @@ h1 {
 }
 
 .search-form button {
-    padding: 10px 15px;
+    padding: 12px 15px;
     font-size: 16px;
     color: white;
     background-color: #007BFF;
     border: none;
-    border-radius: 0 5px 5px 0;
+    border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    white-space: nowrap;
 }
 
 .search-form button:hover {
     background-color: #0056b3;
+}
+
+/* Bouton Ajouter une course */
+.btn-add {
+    padding: 12px 18px;
+    background-color: #28a745;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+    text-align: center;
+    white-space: nowrap;
+    max-width: 250px;
+}
+
+.btn-add:hover {
+    background-color: #218838;
+}
+
+/* 📌 Gestion du tableau et du débordement */
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    box-sizing: border-box;
+    padding: 0 10px; /* Évite le débordement en ajoutant du padding */
 }
 
 table {
@@ -69,6 +122,7 @@ th, td {
     padding: 12px;
     border: 1px solid #ddd;
     text-align: left;
+    white-space: nowrap;
 }
 
 th {
@@ -77,7 +131,7 @@ th {
 }
 
 th a {
-    color: #fff; /* Liens de tri en blanc */
+    color: #fff;
     text-decoration: none;
 }
 
@@ -93,28 +147,14 @@ tr:hover {
     background-color: #f1f1f1;
 }
 
-.btn-add {
-    display: inline-block;
-    margin-top: 20px;
-    padding: 10px 15px;
-    background-color: #28a745;
-    color: #fff;
-    text-decoration: none;
-    border-radius: 5px;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
-}
-
-.btn-add:hover {
-    background-color: #218838;
-}
-
+/* 📌 Boutons d'action */
 .btn-details, .btn-edit, .btn-delete {
-    padding: 8px 12px;
+    padding: 10px 14px;
     border-radius: 5px;
     color: #fff;
     text-decoration: none;
     transition: background-color 0.3s ease;
+    display: inline-block;
 }
 
 .btn-details {
@@ -141,21 +181,105 @@ tr:hover {
     background-color: #c82333;
 }
 
+/* 📱 Mode Mobile : Passage en affichage vertical */
 @media (max-width: 768px) {
+    .table-wrapper {
+        overflow-x: auto;
+        width: 100%;
+        padding: 0 10px;
+    }
+
+    /* Masquer l'en-tête du tableau */
+    table thead {
+        display: none;
+    }
+
+    /* Transformer le tableau en "cartes" */
+    table, tbody, tr, td {
+        display: block;
+        width: 100%;
+    }
+
+    /* Espacement entre chaque carte */
+    tr {
+        margin-bottom: 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 10px;
+        background: #fff;
+    }
+
+    /* Correction : Aligner les cellules */
+    td {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
+        padding: 8px 12px;
+        border: none;
+        font-size: 14px;
+        gap: 10px;
+    }
+
+    /* Correction : Affichage des labels */
+    td::before {
+        content: attr(data-label);
+        font-weight: bold;
+        color: #333;
+        flex-shrink: 0;
+        width: 40%;
+        text-align: left;
+    }
+
+    /* Centrage des boutons */
+    td:last-child {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+
+    td:last-child a {
+        width: fit-content;
+    }
+}
+
+/* 📱 Adaptation spécifique aux iPhones récents (iPhone 16 et autres) */
+@media screen and (max-width: 430px) and (-webkit-min-device-pixel-ratio: 3) {
+    body {
+        font-size: 16px;
+    }
+
+    .container {
+        width: 95%;
+        margin: 10px auto;
+        padding: 15px;
+    }
+
     table {
         font-size: 14px;
     }
 
+    th, td {
+        padding: 10px;
+    }
+
+    .search-container {
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+    }
+
+    .search-form {
+        width: 100%;
+    }
+
+    .search-form input[type="text"],
+    .search-form button,
     .btn-add {
         width: 100%;
-        text-align: center;
-    }
-
-    .search-form input[type="text"] {
-        width: 70%;
-    }
-
-    .search-form button {
-        width: 30%;
+        font-size: 16px;
+        padding: 14px;
     }
 }
+
