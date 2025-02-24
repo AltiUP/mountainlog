@@ -38,8 +38,8 @@ Mettez à jour le fichier `config.php` avec vos informations de connexion MySQL 
 <?php
 $host = 'localhost'; // Hôte MySQL
 $dbname = 'mountainlog'; // Nom de la base de données
-$username = 'root'; // Nom d'utilisateur MySQL
-$password = ''; // Mot de passe MySQL (laissez vide pour localhost)
+$username = 'user'; // Nom d'utilisateur MySQL
+$password = 'password'; // Mot de passe MySQL
 
 $conn = new mysqli($host, $username, $password, $dbname);
 
