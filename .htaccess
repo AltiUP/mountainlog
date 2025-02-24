@@ -1,6 +1,6 @@
 AuthType Basic
 AuthName "Zone protégée"
-AuthUserFile /home/AltiUP/web/altiup.com/public_html/mountainlog/.htpasswd
+AuthUserFile /mountainlog/.htpasswd
 Require valid-user
 
 RewriteEngine On
