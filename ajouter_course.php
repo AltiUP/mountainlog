@@ -177,12 +177,37 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             </select>
 
             <label for="photos">Photos :</label>
-            <input type="file" id="photos" name="photos[]" multiple>
+            <input type="file" id="photos" name="photos[]" multiple accept=".jpg,.jpeg,.png,.gif">
+            <p id="error-message" style="color: red;"></p>
 
             <button type="submit">Ajouter la Course</button>
         </form>
         <a href="index.php">Retour à l'accueil</a>
     </div>
+<script>
+document.getElementById('photos').addEventListener('change', function() {
+    const allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+    const maxSize = 5 * 1024 * 1024; // 5 Mo en octets
+    const files = this.files;
+    let errorMessage = '';
+
+    for (let file of files) {
+        const fileExtension = file.name.split('.').pop().toLowerCase();
+        if (!allowedExtensions.includes(fileExtension)) {
+            errorMessage = "Seuls les fichiers JPG, JPEG, PNG et GIF sont autorisés.";
+            this.value = ''; // Réinitialise le champ
+            break;
+        }
+        if (file.size > maxSize) {
+            errorMessage = "Chaque fichier doit être inférieur à 5 Mo.";
+            this.value = ''; // Réinitialise le champ
+            break;
+        }
+    }
+
+    document.getElementById('error-message').textContent = errorMessage;
+});
+</script>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
     let selectActivite = document.getElementById("type_activite");

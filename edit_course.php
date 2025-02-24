@@ -167,12 +167,37 @@ if ($conn->query($update_sql) === TRUE) {
             </select>
 
             <label for="new_photos">Ajouter des photos supplémentaires :</label>
-            <input type="file" id="new_photos" name="new_photos[]" multiple>
+            <input type="file" id="new_photos" name="new_photos[]" multiple accept=".jpg,.jpeg,.png,.gif">
+            <p id="new-error-message" style="color: red;"></p>
 
             <button type="submit">Enregistrer les modifications</button>
         </form>
         <a href="index.php">Retour à l'accueil</a>
     </div>
+<script>
+document.getElementById('new_photos').addEventListener('change', function() {
+    const allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+    const maxSize = 5 * 1024 * 1024; // 5 Mo en octets
+    const files = this.files;
+    let errorMessage = '';
+
+    for (let file of files) {
+        const fileExtension = file.name.split('.').pop().toLowerCase();
+        if (!allowedExtensions.includes(fileExtension)) {
+            errorMessage = "Seuls les fichiers JPG, JPEG, PNG et GIF sont autorisés.";
+            this.value = ''; // Réinitialise le champ
+            break;
+        }
+        if (file.size > maxSize) {
+            errorMessage = "Chaque fichier doit être inférieur à 5 Mo.";
+            this.value = ''; // Réinitialise le champ
+            break;
+        }
+    }
+
+    document.getElementById('new-error-message').textContent = errorMessage;
+});
+</script>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
     let selectActivite = document.getElementById("type_activite");
