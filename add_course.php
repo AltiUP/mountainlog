@@ -65,8 +65,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
     $difficulte = $_POST['difficulte'];
     $date = $_POST['date'];
-    $conditions = $_POST['conditions'];
-    $remarques = $_POST['remarques'];
+    $conditions = mysqli_real_escape_string($conn, $_POST['conditions']);
+    $remarques = mysqli_real_escape_string($conn, $_POST['remarques']);
     $position_cordee = $_POST['position_cordee'];
 
     // Gestion des photos
